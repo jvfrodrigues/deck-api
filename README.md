@@ -27,7 +27,7 @@ The project can run locally but first will need to
 2. Download this repository
 
    ```bash
-    git clone https://github.com/jvfrodrigues/transaction-product-wex
+    git clone https://github.com/jvfrodrigues/deck-api.git
    ```
 
 3. Install all dependencies
