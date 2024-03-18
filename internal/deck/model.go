@@ -10,9 +10,10 @@ import (
 	"github.com/jvfrodrigues/deck-api/internal/deck/card"
 )
 
-var suits = []string{"CLUBS", "DIAMONDS", "HEARTS", "SPADES"}
-var values = []string{"2", "3", "4", "5", "6", "7", "8", "9", "10", "JACK", "QUEEN", "KING", "ACE"}
+var suits = []string{"SPADES", "DIAMONDS", "CLUBS", "HEARTS"}
+var values = []string{"ACE", "2", "3", "4", "5", "6", "7", "8", "9", "10", "JACK", "QUEEN", "KING"}
 
+// type Deck represents the structure of a deck
 type Deck struct {
 	ID         uuid.UUID   `json:"id"`
 	Shuffled   bool        `json:"shuffled"`
@@ -20,6 +21,7 @@ type Deck struct {
 	DrawnCards []card.Card `json:"drawn_cards"`
 }
 
+// NewDeck creates a new deck
 func NewDeck(options ...func(*Deck)) *Deck {
 	deck := &Deck{
 		ID: uuid.New(),
@@ -48,17 +50,21 @@ func fullCardDeck() []card.Card {
 	return cards
 }
 
+// Shuffled is a option function that alters the creation of the Deck to have its cards shuffled
 func Shuffled(shuffle bool) func(*Deck) {
 	return func(d *Deck) {
-		rand.New(rand.NewSource(time.Now().UnixNano()))
-		for i := range d.Cards {
-			randIndex := rand.Intn(len(d.Cards))
-			d.Cards[i], d.Cards[randIndex] = d.Cards[randIndex], d.Cards[i]
+		if shuffle {
+			rand.New(rand.NewSource(time.Now().UnixNano()))
+			for i := range d.Cards {
+				randIndex := rand.Intn(len(d.Cards))
+				d.Cards[i], d.Cards[randIndex] = d.Cards[randIndex], d.Cards[i]
+			}
+			d.Shuffled = shuffle
 		}
-		d.Shuffled = shuffle
 	}
 }
 
+// Partial let's you chose the cards that you want on your deck by passing the card codes
 func Partial(cards string) func(*Deck) {
 	return func(d *Deck) {
 		if cards == "" {
