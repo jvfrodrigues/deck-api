@@ -3,8 +3,10 @@ package deck
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
+	"github.com/jvfrodrigues/deck-api/internal/deck/card"
 	"github.com/jvfrodrigues/deck-api/internal/env"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
@@ -19,7 +21,9 @@ type Handler struct {
 
 // UseSubroute registers the deck routes
 func (h *Handler) UseSubroute(group *echo.Group) {
-	group.POST("/", h.createDeck)
+	group.POST("", h.createDeck)
+	group.GET("/:id", h.openDeck)
+	group.GET("/:id/draw/:count", h.drawDeck)
 }
 
 type createDeckResponse struct {
@@ -40,6 +44,52 @@ func (h *Handler) createDeck(c echo.Context) error {
 		ID:        deck.ID,
 		Shuffled:  deck.Shuffled,
 		Remaining: len(deck.Cards),
+	}
+	return c.JSON(http.StatusOK, response)
+}
+
+type getDeckResponse struct {
+	ID        uuid.UUID   `json:"deck_id"`
+	Shuffled  bool        `json:"shuffled"`
+	Remaining int         `json:"remaining"`
+	Cards     []card.Card `json:"cards"`
+}
+
+func (h *Handler) openDeck(c echo.Context) error {
+	deckID := c.Param("id")
+	deck, err := h.repository.Get(deckID)
+	if err != nil {
+		return err
+	}
+	response := &getDeckResponse{
+		ID:        deck.ID,
+		Shuffled:  deck.Shuffled,
+		Remaining: len(deck.Cards),
+		Cards:     deck.Cards,
+	}
+	return c.JSON(http.StatusOK, response)
+}
+
+type drawDeckResponse struct {
+	Cards []card.Card `json:"cards"`
+}
+
+func (h *Handler) drawDeck(c echo.Context) error {
+	deckID := c.Param("id")
+	strCount := c.Param("count")
+	if deckID == "" || strCount == "" {
+		c.JSON(http.StatusBadRequest, map[string]string{"message": "missing required params, deckID and count"})
+	}
+	count, err := strconv.Atoi(strCount)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "count must be a number"})
+	}
+	drawnCards, err := h.repository.Draw(deckID, count)
+	if err != nil {
+		return err
+	}
+	response := &drawDeckResponse{
+		Cards: drawnCards,
 	}
 	return c.JSON(http.StatusOK, response)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/jvfrodrigues/deck-api/internal/deck"
 	"github.com/jvfrodrigues/deck-api/internal/env"
 	"github.com/jvfrodrigues/deck-api/internal/logging"
 	"github.com/labstack/echo/v4"
@@ -23,7 +24,13 @@ func start() error {
 		l.SetLevel(logrus.DebugLevel)
 	}
 
-	apiPort := fmt.Sprintf("Server running on :%s", env.APIPort)
+	apiRoute := e.Group("/api")
+
+	deckRoute := apiRoute.Group("/deck")
+	handler := deck.NewHandler(env, l)
+	handler.UseSubroute(deckRoute)
+
+	apiPort := fmt.Sprintf(":%s", env.APIPort)
 	return e.Start(apiPort)
 }
 
