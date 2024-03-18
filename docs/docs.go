@@ -38,7 +38,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Give cards wanted on deck",
-                        "name": "partial",
+                        "name": "cards",
                         "in": "query"
                     }
                 ],
