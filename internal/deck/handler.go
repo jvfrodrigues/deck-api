@@ -32,6 +32,16 @@ type createDeckResponse struct {
 	Remaining int       `json:"remaining"`
 }
 
+// CreateDeck godoc
+//
+//	@Summary		Creates a new deck
+//	@Description	Creates a new deck that can be partial and/or shuffled
+//	@Tags			decks
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	createDeckResponse
+//	@Failure		500	{object}	map[string]string
+//	@Router			/deck/ [post]
 func (h *Handler) createDeck(c echo.Context) error {
 	shuffled := c.QueryParam("shuffled") == "true"
 	cards := c.QueryParam("cards")
@@ -55,6 +65,18 @@ type getDeckResponse struct {
 	Cards     []card.Card `json:"cards"`
 }
 
+// OpenDeck godoc
+//
+//	@Summary		Shows existing deck
+//	@Description	Gets a deck by its ID and shows remaining cards
+//	@Tags			decks
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"DeckID"
+//	@Success		200	{object}	getDeckResponse
+//	@Failure		404	{object}	map[string]string
+//	@Failure		500	{object}	map[string]string
+//	@Router			/deck/{id} [get]
 func (h *Handler) openDeck(c echo.Context) error {
 	deckID := c.Param("id")
 	deck, err := h.repository.Get(deckID)
@@ -74,6 +96,20 @@ type drawDeckResponse struct {
 	Cards []card.Card `json:"cards"`
 }
 
+// DrawDeck godoc
+//
+//	@Summary		Draws cards from deck
+//	@Description	Gets a deck by its ID and draws the amount of cards requested
+//	@Tags			decks
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string	true	"DeckID"
+//	@Param			count	path		string	true	"Card count to draw"
+//	@Success		200		{object}	drawDeckResponse
+//	@Failure		400		{object}	map[string]string
+//	@Failure		404		{object}	map[string]string
+//	@Failure		500		{object}	map[string]string
+//	@Router			/deck/{id}/draw/{count} [get]
 func (h *Handler) drawDeck(c echo.Context) error {
 	deckID := c.Param("id")
 	strCount := c.Param("count")

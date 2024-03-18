@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/sirupsen/logrus"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func start() error {
@@ -36,6 +37,7 @@ func start() error {
 
 func serverConfig(e *echo.Echo, l *logrus.Logger) {
 	e.Use(middleware.CORS())
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.Logger.SetLevel(log.INFO)
 	e.HideBanner = false
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
@@ -67,16 +69,4 @@ func serverConfig(e *echo.Echo, l *logrus.Logger) {
 		},
 	))
 	e.Use(middleware.Recover())
-	e.Use(contentTypeSetMiddleWare())
-}
-
-func contentTypeSetMiddleWare() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			c.Response().
-				Header().
-				Set(echo.HeaderContentType, "application/json; schema=object; version=1; cache=none")
-			return next(c)
-		}
-	}
 }

@@ -1,0 +1,145 @@
+basePath: /api
+definitions:
+  card.Card:
+    properties:
+      code:
+        type: string
+      suit:
+        type: string
+      value:
+        type: string
+    type: object
+  deck.createDeckResponse:
+    properties:
+      deck_id:
+        type: string
+      remaining:
+        type: integer
+      shuffled:
+        type: boolean
+    type: object
+  deck.drawDeckResponse:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/card.Card'
+        type: array
+    type: object
+  deck.getDeckResponse:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/card.Card'
+        type: array
+      deck_id:
+        type: string
+      remaining:
+        type: integer
+      shuffled:
+        type: boolean
+    type: object
+info:
+  contact: {}
+  description: Simple REST API that allows the creation and management of card decks
+  title: Deck API
+  version: "1.0"
+paths:
+  /deck/:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new deck that can be partial and/or shuffled
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/deck.createDeckResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Creates a new deck
+      tags:
+      - decks
+  /deck/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Gets a deck by its ID and shows remaining cards
+      parameters:
+      - description: DeckID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/deck.getDeckResponse'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Shows existing deck
+      tags:
+      - decks
+  /deck/{id}/draw/{count}:
+    get:
+      consumes:
+      - application/json
+      description: Gets a deck by its ID and draws the amount of cards requested
+      parameters:
+      - description: DeckID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Card count to draw
+        in: path
+        name: count
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/deck.drawDeckResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Draws cards from deck
+      tags:
+      - decks
+swagger: "2.0"
