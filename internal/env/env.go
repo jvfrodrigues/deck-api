@@ -2,7 +2,6 @@
 package env
 
 import (
-	"flag"
 	"os"
 	"strings"
 
@@ -11,9 +10,8 @@ import (
 
 // Vars contains the environment variable values
 type Vars struct {
-	Debug     bool
-	APIPort   string
-	IsTesting bool
+	Debug   bool
+	APIPort string
 }
 
 // LoadEnvVariables loads the environment variables into the structure and returns them
@@ -32,20 +30,13 @@ func LoadEnvVariables(logger *logrus.Logger) *Vars {
 			Warn("empty API_PORT env variable. Using default")
 	}
 
-	isTesting := false
-	if flag.Lookup("test.v") != nil {
-		isTesting = true
-	}
-
 	logger.WithFields(logrus.Fields{
-		"debug":     debug,
-		"apiPort":   apiPort,
-		"isTesting": isTesting,
+		"debug":   debug,
+		"apiPort": apiPort,
 	}).Info("environment variables loaded")
 
 	return &Vars{
-		Debug:     debug,
-		APIPort:   apiPort,
-		IsTesting: isTesting,
+		Debug:   debug,
+		APIPort: apiPort,
 	}
 }
