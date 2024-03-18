@@ -37,6 +37,8 @@ type createDeckResponse struct {
 //	@Summary		Creates a new deck
 //	@Description	Creates a new deck that can be partial and/or shuffled
 //	@Tags			decks
+//	@Param			shuffled	query	string	false	"Indicate if deck must be shuffled"
+//	@Param			partial		query	string	false	"Give cards wanted on deck"
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	createDeckResponse

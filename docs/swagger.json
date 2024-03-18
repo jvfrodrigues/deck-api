@@ -21,6 +21,20 @@
                     "decks"
                 ],
                 "summary": "Creates a new deck",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Indicate if deck must be shuffled",
+                        "name": "shuffled",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Give cards wanted on deck",
+                        "name": "partial",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

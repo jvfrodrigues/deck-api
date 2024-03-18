@@ -49,6 +49,15 @@ paths:
       consumes:
       - application/json
       description: Creates a new deck that can be partial and/or shuffled
+      parameters:
+      - description: Indicate if deck must be shuffled
+        in: query
+        name: shuffled
+        type: string
+      - description: Give cards wanted on deck
+        in: query
+        name: partial
+        type: string
       produces:
       - application/json
       responses:
