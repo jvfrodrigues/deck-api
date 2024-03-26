@@ -36,7 +36,7 @@ The project can run locally but first will need to
    ```
 4. Run the project
    ```bash
-   go run main.go
+   go run main.go serve
    #OR
    make serve
    ```
